@@ -1,0 +1,17 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Editar Fecha de Salida</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </form>
+    <form method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        <button type="submit" name="marcar_salida" class="btn btn-danger">Marcar Salida Hoy</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Habitaciones</h1>
+    <div class="row">
+        {% for habitacion in habitaciones %}
+            <div class="col-md-3 mb-3">
+                <a class="btn {% if habitacion.esta_ocupada %}btn-danger{% else %}btn-success{% endif %} btn-block"
+                   href="{% url 'detalles_habitacion' habitacion.id %}">
+                    Habitación {{ habitacion.numero_habitacion }}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="content1" class="mt-5">
+    {% block content1 %}
+    <!-- Los detalles de la habitación se cargarán aquí -->
+    {% endblock %}
+</div>
+{% endblock %}
