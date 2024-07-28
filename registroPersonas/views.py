@@ -8,7 +8,10 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import Persona, Habitacion
 from django_countries import countries
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def registrar_ingreso(request):
     if request.method == 'POST':
         nombre = request.POST['nombre']
@@ -48,19 +51,23 @@ def registrar_ingreso(request):
     })
 
 
+@login_required
 def listar_pendientes(request):
     pendientes = Persona.objects.filter(pendiente=True).order_by('-fecha_entrada')
     return render(request, 'registroPersonas/listarPendientes.html', {'pendientes': pendientes})
 
+@login_required
 def listar_salidos(request):
     salidos = Persona.objects.filter(salio=True).order_by('-fecha_entrada')
     return render(request, 'registroPersonas/listarSalidos.html', {'salidos': salidos})
 
+@login_required
 def listar_personas(request):
     personas = Persona.objects.all().order_by('-fecha_entrada')
     return render(request, 'registroPersonas/listarPersonas.html', {'personas': personas})
 
 
+@login_required
 def marcar_salido(request, persona_id):
     persona = Persona.objects.get(id=persona_id)
     persona.marcar_salido()
@@ -70,10 +77,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Persona
 from django.utils import timezone
 
+@login_required
 def listar_borrados(request):
     borrados = Persona.objects.filter(fecha_eliminacion__isnull=False)
     return render(request, 'registroPersonas/listarBorrados.html', {'borrados': borrados})
 
+@login_required
 def marcar_borrado(request, persona_id):
     persona = get_object_or_404(Persona, id=persona_id)
     persona.fecha_eliminacion = timezone.now()
@@ -81,8 +90,7 @@ def marcar_borrado(request, persona_id):
     persona.save()
     return redirect('listarBorrados')
 
-
-
+@login_required
 def buscar_persona(request):
     query = request.GET.get('q', '')
     personas = Persona.objects.filter(fecha_eliminacion__isnull=True).filter(
@@ -96,7 +104,7 @@ def buscar_persona(request):
     )
     return render(request, 'registroPersonas/buscarPersona.html', {'personas': personas, 'query': query})
 
-
+@login_required
 def ver_habitaciones(request):
     habitaciones = Habitacion.objects.all()
     for habitacion in habitaciones:
@@ -117,6 +125,7 @@ def detalles_habitacion(request, habitacion_id):
 
 from .forms import EditarFechaSalidaForm
 
+@login_required
 def editar_fecha_salida(request, persona_id):
     persona = get_object_or_404(Persona, id=persona_id)
     if request.method == 'POST':
