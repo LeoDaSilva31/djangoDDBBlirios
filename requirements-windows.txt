@@ -1,0 +1,3 @@
+# requirements-windows.txt
+pypiwin32==223
+pywin32==306
