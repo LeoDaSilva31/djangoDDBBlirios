@@ -1,0 +1,66 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+
+{% block content1 %}
+<div class="container">
+    <h2>Listado de Habitaciones</h2>
+    {% if messages %}
+        {% for message in messages %}
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: '{{ message }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+        {% endfor %}
+    {% endif %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Capacidad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for habitacion in habitaciones %}
+            <tr>
+                <td>{{ habitacion.numero_habitacion }}</td>
+                <td>{{ habitacion.nombre_habitacion }}</td>
+                <td>{{ habitacion.estado }}</td>
+                <td>{{ habitacion.capacidad }}</td>
+                <td>
+                    <a href="{% url 'editar_habitacion' habitacion.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ habitacion.id }}')">Borrar</button>
+                    <form id="deleteForm-{{ habitacion.id }}" method="post" action="{% url 'borrar_habitacion' habitacion.id %}" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function confirmDelete(habitacionId) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, borrar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`deleteForm-${habitacionId}`).submit();
+        }
+    })
+}
+</script>
+{% endblock %}

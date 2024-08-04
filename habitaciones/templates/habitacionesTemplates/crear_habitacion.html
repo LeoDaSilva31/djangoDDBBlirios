@@ -1,0 +1,27 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+
+{% block content1 %}
+<div class="container">
+    <h2>Crear Habitación</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Crear Habitación</button>
+    </form>
+</div>
+
+{% if success %}
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: 'Habitación creada con éxito',
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{% url 'listar_habitaciones' %}";
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

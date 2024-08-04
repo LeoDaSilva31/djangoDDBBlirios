@@ -1,0 +1,69 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+
+{% block content1 %}
+<div class="container">
+    <h2>Huéspedes Presentes en el Hotel</h2>
+    
+    {% if agrupados_por_habitacion %}
+    <div id="accordion">
+        {% for habitacion, huespedes in agrupados_por_habitacion.items %}
+        <div class="card">
+            <div class="card-header" id="heading{{ habitacion.id }}">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ habitacion.id }}" aria-expanded="true" aria-controls="collapse{{ habitacion.id }}">
+                        Habitación {{ habitacion.numero_habitacion }}
+                    </button>
+                    <button class="btn btn-danger float-right" onclick="liberarHabitacion({{ habitacion.id }})">Liberar habitación</button>
+                </h5>
+            </div>
+
+            <div id="collapse{{ habitacion.id }}" class="collapse" aria-labelledby="heading{{ habitacion.id }}" data-parent="#accordion">
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre del Huésped</th>
+                                <th>Fecha de Salida</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for huesped in huespedes %}
+                            <tr>
+                                <td>{{ huesped.nombre_y_apellido }}</td>
+                                <td>{{ huesped.fecha_salida }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No hay huéspedes registrados en el día de la fecha.
+    </div>
+    {% endif %}
+    
+    <a href="{% url 'listar_huespedes' %}" class="btn btn-primary mt-3">Volver a Total de Huéspedes</a>
+</div>
+
+<script>
+    function liberarHabitacion(habitacionId) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esto liberará la habitación y marcará a los huéspedes como que han salido!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, liberar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/huespedes/liberar/${habitacionId}/`;
+            }
+        });
+    }
+</script>
+{% endblock %}

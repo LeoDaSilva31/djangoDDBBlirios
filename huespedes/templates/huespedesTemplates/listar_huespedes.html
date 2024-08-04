@@ -1,0 +1,40 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+
+{% block content1 %}
+<div class="container">
+    <h2>Listado de Huéspedes</h2>
+    
+    {% if huespedes %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre y Apellido</th>
+                <th>DNI o Pasaporte</th>
+                <th>Nacionalidad</th>
+                <th>Fecha de Entrada</th>
+                <th>Fecha de Salida</th>
+                <th>Habitación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for huesped in huespedes %}
+            <tr>
+                <td>{{ huesped.nombre_y_apellido }}</td>
+                <td>{{ huesped.dni_o_pasaporte }}</td>
+                <td>{{ huesped.nacionalidad }}</td>
+                <td>{{ huesped.fecha_entrada }}</td>
+                <td>{{ huesped.fecha_salida }}</td>
+                <td>{{ huesped.habitacion.numero_habitacion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No hay huéspedes registrados en el día de la fecha.
+    </div>
+    {% endif %}
+    
+    <a href="{% url 'registrar_huespedes' %}" class="btn btn-primary mt-3">Registrar Nuevos Huéspedes</a>
+</div>
+{% endblock %}

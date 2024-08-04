@@ -1,0 +1,32 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+
+{% block content1 %}
+<div class="container">
+    <h2>Editar Habitación</h2>
+    <form id="editForm" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="button" class="btn btn-primary" onclick="confirmSave()">Guardar Cambios</button>
+    </form>
+    <a href="{% url 'listar_habitaciones' %}" class="btn btn-secondary mt-3">Volver a la Lista</a>
+</div>
+
+<script>
+function confirmSave() {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¿Seguro que quieres guardar los cambios?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("editForm").submit();
+        }
+    });
+}
+</script>
+{% endblock %}

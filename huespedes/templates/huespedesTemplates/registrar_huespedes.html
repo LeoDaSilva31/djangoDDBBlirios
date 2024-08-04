@@ -1,0 +1,111 @@
+{% extends 'usuariosTemplates/bienvenida.html' %}
+
+{% block content1 %}
+<div class="container">
+    <h2>Registrar Huéspedes</h2>
+    <form id="huespedesForm" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_habitacion">Habitación:</label>
+            {{ form.habitacion }}
+        </div>
+        <div class="form-group">
+            <label for="id_fecha_entrada">Fecha de Entrada:</label>
+            {{ form.fecha_entrada }}
+        </div>
+        <div class="form-group">
+            <label for="id_fecha_salida">Fecha de Salida:</label>
+            {{ form.fecha_salida }}
+        </div>
+
+        <div id="personasFields" class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre y Apellido</th>
+                        <th>DNI o Pasaporte</th>
+                        <th>Nacionalidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se agregarán las filas para las personas dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Campo de notas ajustado -->
+        <div class="form-group">
+            <label for="id_notas_personas">Notas:</label>
+            <textarea name="notas_personas" id="id_notas_personas" class="form-control" style="width: 100%; height: 60px;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrar Huéspedes</button>
+    </form>
+    <a href="{% url 'listar_huespedes' %}" class="btn btn-secondary mt-3">Volver a la Lista</a>
+</div>
+
+<script>
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Configura la fecha de entrada
+    $('#id_fecha_entrada').datepicker({
+        format: 'dd-mm-yyyy',  // Cambiado a formato esperado en Argentina
+        autoclose: true,
+        todayHighlight: true,
+        startDate: today,
+        disableTouchKeyboard: true,
+        readonly: true
+    }).on('changeDate', function(e) {
+        var fechaEntrada = $(this).datepicker('getDate');
+        $('#id_fecha_salida').datepicker('setStartDate', fechaEntrada);
+    });
+
+    // Configura la fecha de salida
+    $('#id_fecha_salida').datepicker({
+        format: 'dd-mm-yyyy',  // Cambiado a formato esperado en Argentina
+        autoclose: true,
+        todayHighlight: true,
+        disableTouchKeyboard: true,
+        readonly: true
+    });
+
+    // Configura la selección de habitación y ocupantes
+    $('#id_habitacion').change(function() {
+        var habitacionId = $(this).val();
+        if (habitacionId) {
+            $.ajax({
+                url: '/huespedes/get_capacidad/',
+                data: {
+                    'habitacion_id': habitacionId
+                },
+                success: function(data) {
+                    var tbody = $('#personasFields tbody');
+                    tbody.empty();
+
+                    for (var i = 0; i < data.capacidad; i++) {
+                        tbody.append(`
+                            <tr>
+                                <td>
+                                    <input type="text" name="nombre_y_apellido_${i}" class="form-control" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="dni_o_pasaporte_${i}" class="form-control" required>
+                                </td>
+                                <td>
+                                    <select name="nacionalidad_${i}" class="form-control">
+                                        {% for code, name in form.fields.nacionalidad.choices %}
+                                            <option value="{{ code }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock %}
