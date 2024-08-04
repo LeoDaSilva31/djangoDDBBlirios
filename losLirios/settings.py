@@ -20,9 +20,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('p3&$kke+-o30rm64$f0wfzd5m73zssi9$)%89*7hxwg8917d)*', default='django-insecure-3wgh$7&ehk%w7@19g=dobp_^k$_^p#5jddm#)+k2&iz8n(*gnf')
 
 # ¡ADVERTENCIA DE SEGURIDAD: no ejecutes con debug activado en producción!
-DEBUG = True
-
-#env('DEBUG', default=False)
+DEBUG = env('DEBUG', default=False)
 
 # Definir los hosts permitidos
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
